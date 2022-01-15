@@ -63,14 +63,11 @@ class Gateway implements IGateway {
 	public function send(IUser $user, string $identifier, string $message) {
 		$client = $this->clientService->newClient();
 		$response = $client->post(
-			$this->config->getUrl(),
-			[
-				'body' => [
-					'to' => $identifier,
-					'message' => $message,
-				],
-			]
-		);
+			$this->config->getUrl() + $identifier,
+			json_encode(array(
+				'message' => $message,
+			)
+		));
 		$body = $response->getBody();
 		$json = json_decode($body, true);
 
