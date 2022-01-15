@@ -63,15 +63,17 @@ class Gateway implements IGateway {
 	public function send(IUser $user, string $identifier, string $message) {
 		$client = $this->clientService->newClient();
 		$response = $client->post(
-			$this->config->getUrl() + $identifier,
-			json_encode(array(
-				'message' => $message,
-			)
-		));
+			$this->config->getUrl() . $identifier,
+			[
+				'body' => json_encode(array(
+					"message" => "$message"
+				))
+			]
+		);
 		$body = $response->getBody();
 		$json = json_decode($body, true);
 
-		if ($response->getStatusCode() !== 200 || is_null($json) || !is_array($json) || !isset($json['success']) || $json['success'] !== true) {
+		if ($response->getStatusCode() !== 201 || is_null($json)) {
 			$status = $response->getStatusCode();
 			throw new SmsTransmissionException("error reported by Signal gateway, status=$status, body=$body}");
 		}
