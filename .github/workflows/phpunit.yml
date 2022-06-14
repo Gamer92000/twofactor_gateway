@@ -15,17 +15,13 @@ jobs:
       # do not stop on another job's failure
       fail-fast: false
       matrix:
-        php-versions: ['7.3', '8.0']
+        php-versions: ['7.4', '8.0']
         databases: ['sqlite']
         coverage: ['xdebug']
         xdebug_mode: ['debug']
-        server-versions: ['stable21', 'stable22', 'stable23', 'master']
+        server-versions: ['stable22', 'stable23', 'stable24', 'master']
         include:
           # used to run coverage only on 7.4-stable23
-          - php-versions: '7.4'
-            databases: 'sqlite'
-            server-versions: 'stable21'
-            xdebug_mode: debug
           - php-versions: '7.4'
             databases: 'sqlite'
             server-versions: 'stable22'
@@ -36,13 +32,17 @@ jobs:
             xdebug_mode: coverage
           - php-versions: '7.4'
             databases: 'sqlite'
+            server-versions: 'stable24'
+            xdebug_mode: coverage
+          - php-versions: '7.4'
+            databases: 'sqlite'
             server-versions: 'master'
             xdebug_mode: debug
     name: php${{ matrix.php-versions }}-${{ matrix.databases }}-${{ matrix.server-versions }}
 
     steps:
       - name: Checkout server
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           repository: nextcloud/server
           ref: ${{ matrix.server-versions }}
@@ -55,7 +55,7 @@ jobs:
           git -c "http.extraheader=$auth_header" -c protocol.version=2 submodule update --init --force --recursive --depth=1
 
       - name: Checkout app
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           path: apps/${{ env.APP_NAME }}
 
@@ -93,7 +93,7 @@ jobs:
         working-directory: apps/${{ env.APP_NAME }}
         env:
           XDEBUG_MODE: ${{ matrix.xdebug_mode }}
-        run: ./vendor/phpunit/phpunit/phpunit -c tests/phpunit.xml
+        run: ./vendor/bin/phpunit -c tests/phpunit.xml
 
       - name: Download scrutinizer ocular.phar
         if: ${{ matrix.php-versions == '7.4' && matrix.server-versions == 'stable23' }}

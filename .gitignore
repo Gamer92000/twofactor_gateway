@@ -1,7 +1,6 @@
 composer.phar
 
-/build
-/js/build
+/js
 
 /node_modules
 vendor/
@@ -11,4 +10,4 @@ vendor/
 
 /tests/clover.*
 
-.php_cs.cache
+.php-cs-fixer.cache
