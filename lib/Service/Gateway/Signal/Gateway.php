@@ -65,11 +65,15 @@ class Gateway implements IGateway {
 		// determine type of gateway
 		$response = $client->get($this->config->getUrl() . '/v1/about');
 		if ($response->getStatusCode() === 200) {
-			// New style gateway https://gitlab.com/morph027/signal-cli-dbus-rest-api
+			// New style gateway https://github.com/bbernhard/signal-cli-rest-api
 			$response = $client->post(
-				$this->config->getUrl() . '/v1/send/' . $identifier,
+				$this->config->getUrl() . '/v2/send',
 				[
-					'json' => [ 'message' => $message ],
+					'json' => [
+						'message' => $message,
+						'number' => $this->config->getNumber(),
+						'recipients' => [ $identifier ]
+					],
 				]
 			);
 			$body = $response->getBody();
