@@ -104,10 +104,15 @@ class Configure extends Command {
 		$url = $helper->ask($input, $output, $urlQuestion);
 		$output->writeln("Using $url.");
 
+		$numberQuestion = new Question('Please enter the number to use for sending SMSs: ');
+		$number = $helper->ask($input, $output, $numberQuestion);
+		$output->writeln("Using $number.");
+
 		/** @var SignalConfig $config */
 		$config = $this->signalGateway->getConfig();
 
 		$config->setUrl($url);
+		$config->setNumber($number);
 	}
 
 	private function configureSms(InputInterface $input, OutputInterface $output) {
